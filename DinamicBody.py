@@ -26,8 +26,27 @@ class Particle:
         self.v = v
         self.m = m
     
-    def integrate(self,dt):
-        self.p = [self.p[0]+self.v[0]*dt, self.p[1]+self.v[1]*dt, self.p[1]+self.v[1]*dt]
+    def computeR(self,p1):
+        r = math.sqrt((p1[0]-self.p[0])**2+(p1[1]-self.p[1])**2+(p1[2]-self.p[2])**2)
+        return r
+    
+    def computeU(self,p1):
+        u = [0,0,0]
+        i = 0
+        for a,b in zip(self.p,p1):
+            u[i] = b - a
+            i+=1
+        return u
+    
+    def integrate(self,dt,p1,m1):
+        r = self.computeR(p1)
+        u = self.computeU(p1)
+        
+        Vx = (G*m1*dt/r**3)*u[0]
+        Vy = (G*m1*dt/r**3)*u[1]
+        Vz = (G*m1*dt/r**3)*u[2]
+        
+        self.p = [self.p[0]+(self.v[0]+Vx)*dt, self.p[1]+(self.v[1]+Vy)*dt, self.p[1]+(self.v[1]+Vz)*dt]
     
     def getPosition(self):
         return self.p
@@ -36,14 +55,25 @@ class Particle:
         k = (1/2)*self.m*[math.sqrt(self.v[0]^2+self.v[1]^2+self.v[2]^2)]
         return k
     
-p0=[0.0, 0.0, 0.0] #cm
-v0=[1.0, 1.0, 1.0] #cm/s
-m=1.0 #g
+p0=[0.0, 0.0, 0.0] #m
+v0=[1.0, 1.0, 1.0] #m/s
+m=1.0 #kg
 dt=1.0 #sec
+G=6.674e-11 #m^3*kg^-1*s^-1
+
+p1=[10.0, 0.0, 0.0] #m
+v1=[0.0, 0.0, 0.0] #m/s
+m1=1e24 #kg
 
 A = Particle(p0,v0,m)
 
 for t in range(60):
     #print(A.getPosition())
-    A.integrate(dt)
+    A.integrate(dt,p1,m1)
     print(A.getPosition())
+
+
+
+
+
+
