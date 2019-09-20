@@ -29,12 +29,13 @@ from mpl_toolkits.mplot3d import Axes3D
 G=6.674e-11         #m^3kg^-1s^-2
 
 class Particle:
-    
     def __init__(self, p, v, m, dt=1):
         self.p = p
         self.v = v
         self.m = m
         self.dt = dt
+        self.trajectory = [p]
+        self.time = [0.0]
         
     def setdt(self,dt):
         self.dt = dt
@@ -90,9 +91,47 @@ class Particle:
     
     def getVelocity(self):
         return self.v
-
-
     
+    def computeV(self,B):
+        r = self.computeR(B.p)
+        u = self.computeU(B.p)
+
+        Vx=(G*B.m*self.dt/(r**3))*u[0]
+        Vy=(G*B.m*self.dt/(r**3))*u[1]
+        Vz=(G*B.m*self.dt/(r**3))*u[2]
+        
+        return [Vx,Vy,Vz]
+    
+    def updateV(self,v):
+        self.v[0]+=v[0]
+        self.v[1]+=v[1]
+        self.v[2]+=v[2]
+        
+    def updatePosition(self,time):
+        self.p = [self.p[0]+ (self.v[0]) *dt,self.p[1]+ (self.v[1])*dt,self.p[2]+ (self.v[2])*dt]
+        self.time.append(time)
+        self.trajectory.append(self.p)
+
+    def getTrajectory(self):
+        return self.time, self.trajectory
+
+class Potential:    
+    def __init__(self, system, dt):
+        self.system = system
+        self.dt = dt
+        
+    def integrate(self,time):
+        for particle in self.system:
+            for other in self.system:
+                if other != particle:
+                    velocity = particle.computeV(other)
+                    particle.updateV(velocity)
+                    
+        for particle in self.system:
+            particle.updatePosition(time)
+        
+        return self.system
+        
     
 p0=[5e-2, 1e-3, 0.0]  #km
 v0=[0.0, 0.0, 0.0]  #km/s
@@ -100,7 +139,7 @@ m=1e7         #kg
 
 p1=[0.0, 0.0, 0.0]  #km
 v1=[1.0, 0.0, 0.0]  #km/s
-m1=1.0               #kg
+m1=1e7              #kg
 
 
 dt=0.001              #sec
@@ -108,22 +147,28 @@ dt=0.001              #sec
 A = Particle(p0,v0,m)
 B = Particle(p1,v1,m1)
 
-B.setdt(dt)
+particles = [A,B]
+twoBody = Potential(particles,dt)
 
-x=[]
-y=[]
-
-v=[]
-
-a=[]
-
-
-x.append(0)
-#y.append(B.getPosition()[0])
-y.append(B.getPosition())
-v.append(B.getVelocity()[0])
-a.append(0.0)
-v1=B.getVelocity()[0]
+for t in range(1,100):
+    system = twoBody.integrate(float(t)*dt)
+    
+##B.setdt(dt)
+#
+#x=[]
+#y=[]
+#
+#v=[]
+#
+#a=[]
+#
+#
+#x.append(0)
+##y.append(B.getPosition()[0])
+#y.append(B.getPosition())
+#v.append(B.getVelocity()[0])
+#a.append(0.0)
+#v1=B.getVelocity()[0]
 
 
 '''
@@ -143,21 +188,21 @@ for t in range(1,100):
     
 '''
 
-for t in range(1,100):
-    B.integrate(A)
-    x.append(float(t)*dt)
-    y.append(B.getPosition())
-    
-
-
-
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-for point in y:
-    ax.scatter(point[0],point[1],point[2],marker='o')
-pointA=A.getPosition()
-ax.scatter(pointA[0],pointA[1],pointA[2],marker='o')
+i = 0
+c = ['g','r']
+for particle in particles:
+    time, trajectory = particle.getTrajectory()
+    
+    for x,y in zip(time,trajectory):
+        ax.scatter(y[0],y[1],y[2],marker='o', c=c[i])
+    i += 1
+#for point in y:
+#    ax.scatter(point[0],point[1],point[2],marker='o')
+#pointA=A.getPosition()
+#ax.scatter(pointA[0],pointA[1],pointA[2],marker='o')
 plt.show()
 
 
