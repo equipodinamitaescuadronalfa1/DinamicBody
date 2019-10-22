@@ -20,6 +20,7 @@ import math
 import matplotlib
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
+from tqdm import tqdm
 
 G=6.674e-11         #m^3kg^-1s^-2
 
@@ -96,8 +97,8 @@ class Particle:
         
     #def integrate(self,dt,p1,m1):
     def updatePosition(self,time,save):        
+        self.p = [self.p[0]+ (self.v[0]) *dt,self.p[1]+ (self.v[1])*dt,self.p[2]+ (self.v[2])*dt]
         if save:
-            self.p = [self.p[0]+ (self.v[0]) *dt,self.p[1]+ (self.v[1])*dt,self.p[2]+ (self.v[2])*dt]
             self.time.append(time)
             self.trajectory.append(self.p)
 
@@ -112,7 +113,7 @@ class Potential:
         self.dt = dt #set of Particles
 
     def integrate(self,time,save):
-        print(time/3600/24)
+        #print(time/3600.0/24.0)
         for particle in self.system:
             for other in self.system:
                 if other != particle:
@@ -123,46 +124,28 @@ class Potential:
 
         return self.system
 
-lenTime=3600*24*90  #sec
-dt=1#sec    
+lenTime=3600.0*24*180  #sec
+dt=1.0      #sec    
 
 
-
-
-
-
-
+sun = Particle([0,0,0],[0,0,0], 2e30)
+#mercury = Particle([0,5.7e10,0],[47000,0,0], 3.285e23)
+#venus = Particle([0, 1.1e11, 0], [35000,0,0], 4.8e24)
+earth = Particle([0, 1.49e11, 0], [30000, 0, 0], 6e24)
+moon = Particle([0, 1.49e11+384400e3, 0],[1000, 0, 0],7.35e22)
+cannon = Particle([0, 1.49e11+6371e3, 0],[30000, 10972.8, 0],8731.6531)
+#mars = Particle([0.0, 2.2e11,0.0],[24000.0,0.0,0.0],2.4e24)
+#jupiter=Particle([0.0, 7.7e11, 0.0] ,[13000, 0.0, 0.0],1e28) 
+#saturn = Particle([0,1.4e12,0], [9000,0,0],5.7e26)
+#uranus = Particle([0,2.8e12,0], [6835,0,0], 8.7e25)
+#neptune = Particle([0,4.5e12,0], [5477,0,0],1e26)
+#pluto = Particle ([0,3.7e12,0], [4748,0,0],1.3e22)
 
 
 n_steps = int(lenTime/dt)
 
-p0=[0.001, 0.0, 0.0]  #m
-v0=[0.0, 0.0, 0.0]  #m/s
-m=1e1               #kg
+particles = [sun,earth,moon]
 
-p1=[0.0, 0.0, 0.0]  #m
-v1=[0.0, 0.0, 1e-3]  #m/s
-m1=1e1               #kg
-
-
-
-A = Particle(p0,v0,m)
-B = Particle(p1,v1,m1)
-C = Particle( [0.0, 0.001, 0.0] , [0.0,0.0,0.0], 1e1)
-
-sun = Particle([0,0,0],[0,0,0], 2e30)
-mercury = Particle([0,5.7e10,0],[47000,0,0], 3.285e23)
-venus = Particle([0, 1.1e11, 0], [35000,0,0], 4.8e24)
-earth = Particle([0, 1.5e11, 0], [30000, 0, 0], 6e24)
-mars = Particle([0,2.2e11,0.0],[24000.0,0.0,0.0],2.4e24)
-jupiter=Particle([0, 7.7e11, 0.0],[13000, 0.0, 0.0],1e28) 
-saturn = Particle ([0,1.4e12,0], [9000,0,0],5.7e26)
-uranus = Particle([0,2.8e12,0], [6835,0,0], 8.7e25)
-neptune = Particle([0,4.5e12,0], [5477,0,0],1e26)
-pluto = Particle ([0,3.7e12,0], [4748,0,0],1.3e22)
-
-#particles = [sun,mercury,venus,earth,mars,jupiter,saturn,uranus,neptune,pluto]
-particles = [sun,earth]
 twoBody = Potential(particles,dt)
 
 x=[]
@@ -170,99 +153,28 @@ y=[]
 
 skip=0
 save=False
-for t in range(1,n_steps):
-    if skip == 10:
+for t in tqdm(range(1,n_steps)):
+    if skip == 10000:
         skip=0
         save=True
     system = twoBody.integrate(float(t)*dt,save)
     save=False
-    skip +=1
-
-
-for t in range(1,n_steps):
-    system = twoBody.integrate(float(t)*dt,save)
-    
-
-
-#B.setdt(dt)
-#x=[]
-#y=[]
-#v=[]
-#a=[]
-#x.append(0.0)
-##y.append(B.getPosition()[0])
-#y.append(B.getPosition())
-#v.append(B.getVelocity()[0])
-#
-#print(B.getVelocity()[0])
-#
-#a.append(0.0)
-#v1=B.getVelocity()[0]
-##lastX = B.getPosition()[0]
-#
-##for t in range(1,100):
-##    lastX = B.getPosition()[0]
-##    lastV = v1
-##    B.integrate(A)
-##    print(B.getPosition())
-##    x.append(float(t)*dt)
-##    y.append(B.getPosition()[0])
-##    v1=(B.getPosition()[0]-lastX)/B.dt
-##    print(v1)
-##    v.append(v1)
-##    a.append((v1-lastV)/B.dt)
-#
-#for t in range(1,100):
-#    B.integrate(A)
-#    x.append(float(t)*dt)
-#    y.append(B.getPosition())
+    skip += 1
+    pass
 
 fig = plt.figure()
 
 ax = fig.add_subplot(111, projection='3d')
 
 i=0
-#c=['xkcd:bright yellow','xkcd:dark red','xkcd:gold','xkcd:bright green','xkcd:red','xkcd:burnt orange','xkcd:mustard','xkcd:bright blue','xkcd:baby blue','xkcd:grey']
-c=['xkcd:bright yellow','xkcd:bright green']
+c=['g','r','b','g','r','b','g','r','b','g','r','b']
 for particle in particles:
-    time, trajectory = particle.getTrajectory()
-    for x, y in zip(time,trajectory):
-        ax.scatter(y[0], y[1], y[2], marker='o',c=c[i])
-        #ax.scatter(y[0], y[1], y[2], c=c[i])
-    i=i+1
-
-
-# stack the plots
-#lns = []
-#for i in range(len(t)):
-#    ln1, = ax.plot(y0[:i], y1[:i], z1[:i], 'o-', color='steelblue')
-#    ln2, = ax.plot(x2[:i], y2[:i], z2[:i], 'o-', color='darkorange')
-#    lns.append([ln1, ln2])
-
-#line_ani = animation.ArtistAnimation(fig, lns, interval=100, blit=True)
-
+    if(particle!=sun):
+        time, trajectory = particle.getTrajectory()
+        for x, y in zip(time,trajectory):
+            ax.scatter(y[0], y[1], y[2], marker='o',c=c[i])
+            #ax.scatter(y[0], y[1], y[2], c=c[i])
+        i=i+1
     
-#for point in y:
-#    ax.scatter(point[0], point[1], point[2], marker='o')
-
-#pointA=A.getPosition()
-#ax.scatter(pointA[0], pointA[1], pointA[2], marker='o')
-
     
-#fig, ax = plt.subplots(3)    
-#ax[0].plot(x,y)
-#ax[0].set(xlabel='time [sec]', ylabel='distance [km]',
-#           title="n-body")
-#ax[0].grid()
-#
-#ax[1].plot(x,v)
-#ax[1].set(xlabel='time [sec]', ylabel='velocity [km/s]')
-#ax[1].grid()
-#
-#ax[2].plot(x,a)
-#ax[2].set(xlabel='time [sec]', ylabel='acceleration [km/s^2]')
-#ax[2].grid()
-
-
-
 plt.show()
