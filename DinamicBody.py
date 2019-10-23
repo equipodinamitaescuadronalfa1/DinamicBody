@@ -124,16 +124,16 @@ class Potential:
 
         return self.system
 
-lenTime=3600.0*24*180  #sec
-dt=1.0      #sec    
+lenTime=3600.0*24*26 #sec
+dt=1      #sec    
 
 
-sun = Particle([0,0,0],[0,0,0], 2e30)
+#sun = Particle([0,0,0],[0,0,0], 2e30)
 #mercury = Particle([0,5.7e10,0],[47000,0,0], 3.285e23)
 #venus = Particle([0, 1.1e11, 0], [35000,0,0], 4.8e24)
-earth = Particle([0, 1.49e11, 0], [30000, 0, 0], 6e24)
-moon = Particle([0, 1.49e11+384400e3, 0],[1000, 0, 0],7.35e22)
-cannon = Particle([0, 1.49e11+6371e3, 0],[30000, 10972.8, 0],8731.6531)
+earth = Particle([0, 0, 0], [0, 0, 0], 6e24)
+moon = Particle([384400e3, 0, 0],[0, 1e3, 0],7.35e22)
+#cannon = Particle([0, 1.49e11+6371e3, 0],[30000, 10972.8, 0],8731.6531)
 #mars = Particle([0.0, 2.2e11,0.0],[24000.0,0.0,0.0],2.4e24)
 #jupiter=Particle([0.0, 7.7e11, 0.0] ,[13000, 0.0, 0.0],1e28) 
 #saturn = Particle([0,1.4e12,0], [9000,0,0],5.7e26)
@@ -144,7 +144,7 @@ cannon = Particle([0, 1.49e11+6371e3, 0],[30000, 10972.8, 0],8731.6531)
 
 n_steps = int(lenTime/dt)
 
-particles = [sun,earth,moon]
+particles = [earth,moon]
 
 twoBody = Potential(particles,dt)
 
@@ -154,7 +154,7 @@ y=[]
 skip=0
 save=False
 for t in tqdm(range(1,n_steps)):
-    if skip == 10000:
+    if skip == 3600*24*2:
         skip=0
         save=True
     system = twoBody.integrate(float(t)*dt,save)
@@ -169,12 +169,11 @@ ax = fig.add_subplot(111, projection='3d')
 i=0
 c=['g','r','b','g','r','b','g','r','b','g','r','b']
 for particle in particles:
-    if(particle!=sun):
-        time, trajectory = particle.getTrajectory()
-        for x, y in zip(time,trajectory):
-            ax.scatter(y[0], y[1], y[2], marker='o',c=c[i])
-            #ax.scatter(y[0], y[1], y[2], c=c[i])
-        i=i+1
+    time, trajectory = particle.getTrajectory()
+    for x, y in zip(time,trajectory):
+        ax.scatter(y[0], y[1], y[2], marker='o',c=c[i])
+        #ax.scatter(y[0], y[1], y[2], c=c[i])
+    i=i+1
     
     
 plt.show()
