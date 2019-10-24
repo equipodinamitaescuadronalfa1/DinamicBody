@@ -22,3 +22,7 @@ Bueno eso fue lo que nos preguntamos así que simularemos el lanzamiento de un c
 ## Objetivo
 
 Realizar la simulación de un cohete con destino a la luna con los parámetros descritos en el libro de Julio Verne “De la Tierra a la Luna” para ver si son correctos o no.
+
+## Imagen
+
+![alt text](https://github.com/equipodinamitaescuadronalfa1/DinamicBody/Figure_1.png "Results")
