@@ -25,4 +25,4 @@ Realizar la simulación de un cohete con destino a la luna con los parámetros d
 
 ## Imagen
 
-![alt text](https://github.com/equipodinamitaescuadronalfa1/DinamicBody/Figure_1.png "Results")
+![alt text](https://github.com/equipodinamitaescuadronalfa1/DinamicBody/blob/master/Figure_1.png "Results")
