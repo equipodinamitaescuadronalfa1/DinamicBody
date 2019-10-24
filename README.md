@@ -2,9 +2,12 @@
 
 ## Ejecución
 
-Para poder ejecutar el programa, se necesita instalar tqdm:
+Para poder ejecutar el programa, se necesita instalar tqdm y matplotlib:
 ```sh
 pip3 install tqdm
+```
+```sh
+pip3 install matplotlib
 ```
 Para ejecutar el programa, corre esta linea:
 ```sh
