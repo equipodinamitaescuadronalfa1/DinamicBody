@@ -23,6 +23,7 @@ Bueno eso fue lo que nos preguntamos así que simularemos el lanzamiento de un c
 
 Realizar la simulación de un cohete con destino a la luna con los parámetros descritos en el libro de Julio Verne “De la Tierra a la Luna” para ver si son correctos o no.
 
-## Imagen
+## Resultados
 
+Estos son los resultados de la modelación por toda la duración de la trayectoria de la bala. Para motivos de visualización solo fueron graficadas las 57 primeras horas de la bala.
 ![alt text](https://github.com/equipodinamitaescuadronalfa1/DinamicBody/blob/master/Figure_1.png "Results")
