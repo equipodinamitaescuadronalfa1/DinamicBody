@@ -169,11 +169,18 @@ ax = fig.add_subplot(111, projection='3d')
 i=0
 c=['g','r','b','g','r','b','g','r','b','g','r','b']
 for particle in particles:
-    time, trajectory = particle.getTrajectory()
-    for x, y in zip(time,trajectory):
-        ax.scatter(y[0], y[1], y[2], marker='o',c=c[i])
-        #ax.scatter(y[0], y[1], y[2], c=c[i])
-    i=i+1
+    if(particle==cannon):
+        time, trajectory = particle.getTrajectory()
+        for x, y in zip(time[:57],trajectory[:57]):
+            ax.scatter(y[0], y[1], y[2], marker='o',c=c[i])
+            #ax.scatter(y[0], y[1], y[2], c=c[i])
+        i=i+1
+    else:
+        time, trajectory = particle.getTrajectory()
+        for x, y in zip(time,trajectory):
+            ax.scatter(y[0], y[1], y[2], marker='o',c=c[i])
+            #ax.scatter(y[0], y[1], y[2], c=c[i])
+        i=i+1
 
 trajectoryTime = particles[2].getTrajectory()[0]
 trajectory = particles[2].getTrajectory()[1]
